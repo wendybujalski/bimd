@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Bigotry In Media Database</h1>
+<h1 id="main-title">Welcome to the Bigotry In Media Database!</h1>
+<div class="text-content" id="main-search-container">
+    <form method="POST" id="form-search-main">
+        {{ form.hidden_tag() }}
+
+        <div class="text-center"><h4>{{form.title.label}}</h4></div>
+        <div>{{form.title(class="form-control")}}</div>
+        <div class="text-center"><button type="submit" class="btn btn-primary">Search The Database</button></div>
+    </form>
+</div>
 {% endblock %}

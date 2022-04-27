@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <h1 id="main-title">
+        {% if user == g.user %}
+        Your Account
+        {% else %}
+        User: {{user.username}}
+        {% endif %}
+    </h1>
+    <div class="col-md-8 col-lg-6 text-content" id="user-profile">
+        <p>Username: {{user.username}}</p>
+        {% if user == g.user %}<p>Email: {{user.email}}</p>{% endif %}
+        <p>Account Created: {{user.created.strftime('%B %d, %Y')}}</p>
+        <p>Last Login: {{user.last_login.strftime('%B %d, %Y')}}</p>
+        <p>Role: {{user.role_string}}</p>
+    </div>
+</div>
+{% endblock %}

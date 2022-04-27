@@ -1,0 +1,141 @@
+body, h1, h2, h3, h4, h5, h6, p {
+    font-family: 'Work Sans', sans-serif;
+}
+
+.form-control {
+    font-family: 'Work Sans', sans-serif;
+}
+
+.navbar {
+    background-color: black;
+    text-align: center;
+}
+
+.navbar a {
+    color: white;
+}
+
+.navbar a:hover {
+    color: yellow;
+}
+
+.navbar-brand {
+    font-family: 'Rubik Mono One', sans-serif;
+}
+
+.navbar-toggler {
+    color: white;
+}
+
+.text-content {
+    border-radius: 1rem;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    background-color: lightgrey;
+}
+
+.footer {
+    background-color: black;
+}
+
+.footer p {
+    margin: 0;
+    font-weight: bold;
+}
+
+.footer .messages {
+    padding: 1rem;
+}
+
+.footer .danger {
+    color: red;
+}
+
+.footer .success {
+    color: yellow;
+}
+
+
+#content {
+    padding: 1rem;
+}
+
+#main-title {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#form-search-main div{
+    margin: 1rem;
+}
+
+#form-search-main h4 {
+    font-size: 1.3rem;
+}
+
+#form-search-main input {
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1rem;
+}
+
+#user_form input.form-control {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin: 1rem 0;
+}
+
+#about {
+    padding: 1rem;
+    margin: 1rem;
+}
+
+#user-profile {
+    text-align: center;
+}
+
+#about a {
+    text-decoration: none;
+}
+
+/* Minimum site main container width */
+
+@media (max-width: 360px) {
+    #content {
+        padding-top: 4rem;
+        width: 360px;
+    }
+
+    #navbar-main {
+        position: fixed;
+        width: 100vw;
+    }
+}
+
+/* BIMD top logo resizing */
+
+#navbar-main {
+    height: 3.5rem;
+}
+
+#bimd-logo-short {
+    display: none;
+}
+
+@media (max-width: 550px) {
+    #bimd-logo-short {
+        display: inline;
+    }
+    #bimd-logo-long {
+        display: none;
+    }
+}
+
+@media (max-width: 200px) {
+    #bimd-logo-short {
+        position: fixed;
+        top: 0.8rem;
+    }
+}

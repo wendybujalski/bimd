@@ -3,11 +3,10 @@ from wtforms import StringField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, InputRequired
 from models import User
 
-
 class SearchForm(FlaskForm):
     """Form for searching for a movie."""
 
-    title = TextAreaField('Movie Title', validators=[DataRequired()])
+    title = StringField('Search for a movie!', validators=[DataRequired()], render_kw={"placeholder": "Type the title of the movie here"})
 
 class UserSignUpForm(FlaskForm):
     """Form for signing up a user."""
