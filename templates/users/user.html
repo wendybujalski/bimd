@@ -15,6 +15,9 @@
         <p>Account Created: {{user.created.strftime('%B %d, %Y')}}</p>
         <p>Last Login: {{user.last_login.strftime('%B %d, %Y')}}</p>
         <p>Role: {{user.role_string}}</p>
+        {% if user == g.user %}
+        <a href="/u/{{g.user.username}}/edit" class="btn btn-primary btn-block btn-lg">Edit Account Information</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -1,10 +1,12 @@
-from flask import Flask, render_template, redirect, session, g, flash
+import requests
+from flask import Flask, render_template, redirect, session, g, flash, request, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from models import connect_db, db, User
 from forms import SearchForm, UserEditForm, UserLoginForm, UserSignUpForm
-from secrets import SECRET_KEY
+from secrets import SECRET_KEY, TMDB_API_KEY
 
+API_BASE_URL = "https://api.themoviedb.org/3/"
 CURR_USER_KEY = "curr_user"
 DATABASE_NAME = "bimd"
 
@@ -48,9 +50,7 @@ def index():
     form = SearchForm()
 
     if form.validate_on_submit():
-        # NOT DONE YET!
-
-        return redirect("/search")
+        return redirect( url_for("search", q=form.title.data) )
     else:
         return render_template("index.html", form=form)
 
@@ -64,9 +64,17 @@ def about():
 def search():
     """Display search results."""
 
-    # NOT DONE YET!
+    query = request.args.get("q")
+    page = request.args.get("page") or "1"
 
-    return render_template("search.html")
+    res = requests.get(
+        f"{API_BASE_URL}search/movie",
+        params={"api_key": TMDB_API_KEY, "query": query, "page": page}
+    )
+
+    return render_template("search.html", query=query, page=page, results=res.json()["results"])
+
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -133,13 +141,21 @@ def user(username):
 
     return render_template("users/user.html", user=user)
 
-@app.route("/edit", methods=["GET", "POST"])
-def edit():
+@app.route("/u/<username>/edit", methods=["GET", "POST"])
+def edit(username):
     """Edit your user account."""
 
-    # NOT DONE YET, SHOULD VALIDATE USER LOGGED IN
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
 
-    form = UserEditForm() # put the user's object here to prefill the form
+    user = User.query.filter_by(username=username).first_or_404()
+
+    if user != g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    form = UserEditForm(obj=g.user) # put the user's object here to prefill the form
 
     if form.validate_on_submit():
         # NOT DONE YET!
@@ -148,3 +164,10 @@ def edit():
     else:
         return render_template("users/edituser.html", form=form)
 
+@app.route("/m/<int:id>")
+def show_movie(id):
+    """Page for an individual movie."""
+
+    # NOT DONE YET!
+
+    return render_template("movies/show.html")

@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Search Results</h1>
+    <h1>Search Results For "{{query}}"</h1>
+
+    <div class="search-results">
+    {% for movie in results %}
+        <div class="movie-card">
+            <div class="movie-card-img">
+                <a href="/m/{{movie.id}}"><img class="rounded" src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{movie.poster_path}}"/></a>
+            </div>
+            <div class="movie-card-text">
+                <div class="movie-card-title">
+                    <a href="/m/{{movie.id}}">
+                        <h4>{{movie.title}}</h4>
+                        <p>{{movie.release_date}}</p>
+                    </a>
+                </div>
+                <div class="movie-card-overview">{{movie.overview}}</div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
 {% endblock %}

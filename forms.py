@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, InputRequired
+from wtforms.validators import DataRequired, Email, Length, EqualTo, InputRequired, Optional
 from models import User
 
 class SearchForm(FlaskForm):
@@ -28,6 +28,7 @@ class UserEditForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     old_password = PasswordField('Current Password', validators=[Length(min=8)])
+    new_password = PasswordField('New Password', validators=[Optional(), Length(min=8)])
 
 class AddMovieCommentForm(FlaskForm):
     """Form for adding a comment to a movie."""
