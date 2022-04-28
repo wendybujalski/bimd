@@ -1,8 +1,9 @@
 import requests
+from datetime import datetime
 from flask import Flask, render_template, redirect, session, g, flash, request, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
-from models import connect_db, db, User
+from models import connect_db, db, bcrypt, User
 from forms import SearchForm, UserEditForm, UserLoginForm, UserSignUpForm
 from secrets import SECRET_KEY, TMDB_API_KEY
 
@@ -59,22 +60,6 @@ def about():
     """Display the about page."""
 
     return render_template("about.html")
-
-@app.route("/search")
-def search():
-    """Display search results."""
-
-    query = request.args.get("q")
-    page = request.args.get("page") or "1"
-
-    res = requests.get(
-        f"{API_BASE_URL}search/movie",
-        params={"api_key": TMDB_API_KEY, "query": query, "page": page}
-    )
-
-    return render_template("search.html", query=query, page=page, results=res.json()["results"])
-
-
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -158,9 +143,31 @@ def edit(username):
     form = UserEditForm(obj=g.user) # put the user's object here to prefill the form
 
     if form.validate_on_submit():
-        # NOT DONE YET!
+        user = User.authenticate(g.user.username, form.old_password.data)
 
-        return redirect("/")
+        if user:
+            try:
+                user.username = form.username.data
+                user.email = form.email.data
+
+                new_password = form.new_password.data
+                if(len(new_password) > 7):
+                    hashed_pwd = bcrypt.generate_password_hash(new_password).decode('UTF-8')
+                    user.password = hashed_pwd
+
+                db.session.add(user)
+                db.session.commit()
+            except (InvalidRequestError, IntegrityError):
+                flash("Username or email already taken", 'danger')
+                db.session.rollback()
+                return render_template("users/edituser.html", form=form)
+
+            do_login(user)
+            flash(f"{user.username} edited successfully!", "success")
+            return redirect(f"/u/{user.username}")
+        else:
+            flash("Invalid password, please try again.", 'danger')
+            return render_template("users/edituser.html", form=form)
     else:
         return render_template("users/edituser.html", form=form)
 
@@ -169,5 +176,45 @@ def show_movie(id):
     """Page for an individual movie."""
 
     # NOT DONE YET!
+    # First check to see if this movie is in our database.
+    # If it is not in our database, send a request to TMDb to get the info and put it in our database.
+    # Then the data is in our database and we can load it to the page.
+    # Also load the MovieComments and MovieCommentTags for this page to display as well.
+    # Each MovieComment and MovieCommentTag should show with a link to the user profile to the person who posted it.
+    # MovieComments and their tags from banned or shadowbanned users should not show.
 
     return render_template("movies/show.html")
+
+@app.route("/search")
+def search():
+    """Display search results."""
+
+    query = request.args.get("q")
+    page = request.args.get("page") or "1"
+
+    res = requests.get(
+        f"{API_BASE_URL}search/movie",
+        params={"api_key": TMDB_API_KEY, "query": query, "page": page}
+    )
+    data = res.json()["results"]
+    for m in data:
+        # make release date pretty
+        if "release_date" in m and m["release_date"]:
+            m["release_date"] = datetime.strptime(m["release_date"], "%Y-%m-%d").strftime("%B %d, %Y")
+
+    # Before returning the results, we should dump data from the API into our database!
+    # NOT DONE!
+
+    return render_template("search.html", query=query, page=page, results=data)
+
+# Additional routes and stuff to implement -
+
+# Add comment and tags form for a particular movie. Should not allow banned users from submitting anything.
+# A page that shows just a single MovieComment
+# Add tag form which only mods and admins can access.
+# Edit tag form which only mods and admins can access.
+# Display each user's MovieComments on their user profile
+# Ability to edit or delete a MovieComment
+# Users should be able to edit/delete their own MovieComment or an admin can edit/delte or a mod can delete
+
+# ANYTHING ELSE?

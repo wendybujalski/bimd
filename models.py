@@ -34,6 +34,9 @@ class Movie(db.Model):
 
     id = db.Column( db.Integer, primary_key=True)
     title = db.Column(db.String(1000), nullable=False)
+    poster = db.Column(db.Text)
+    release_date = db.Column(db.DateTime)
+    overview = db.Column(db.Text)
 
 
 class User(db.Model):

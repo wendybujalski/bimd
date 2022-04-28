@@ -153,6 +153,10 @@ h1, h2, h3, h4 {
     margin: 1rem;
 }
 
+#about img {
+    margin: 1rem 0;
+}
+
 #user-profile {
     text-align: center;
 }
