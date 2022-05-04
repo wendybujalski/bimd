@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="text-center row justify-content-md-center text-content">
+        <h2 class="text-center">Edit Tag</h2>
+        <div class="col-10 col-md-8 mx-auto">
+            <form method="POST" id="tag_form">
+                {% include "formbaselabel.html" %}
+                <div class="text-center submit-cancel">
+                    <button class="btn btn-primary btn-block">Update Tag</button>
+                    <a href="/tags" class="btn btn-danger btn-block">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

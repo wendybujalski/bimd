@@ -1,0 +1,12 @@
+{% from "movies/comment.html" import comment %}
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="movie-page">
+    <div class="movie-page-section text-center">
+        <h3>Comment on <a href="/m/{{movie.id}}">{{movie.title}}</a></h3>
+        {{comment(c.id, c.user, c.subject, c.text, c.tags, movie, user)}}
+    </div>
+</div>
+{% endblock %}

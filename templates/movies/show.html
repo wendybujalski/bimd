@@ -1,0 +1,52 @@
+{% from "movies/comment.html" import comment %}
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="movie-page">
+    {% include "movies/card.html" %}
+    <hr/>
+    {% if comments|length > 0 %}
+    <div class="movie-page-section">
+        <h3>Tag Statistics</h3>
+        <div class="movie-stats">
+            <!-- TODO Add a graph of the stats here! Also make this look nicer. -->
+            <h4>Tag Totals:</h4>
+            <ul>
+            {% for v, k in stats %}
+                <li><strong>{{k}}:</strong> {{v}}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <hr/>
+    {% endif %}
+    <div class="movie-page-section text-center">
+        {% if not user %}
+            <h4><a href="/signup">Sign up</a> or <a href="/login">Log In</a> to leave a comment.</h4>
+        {% elif user.role.value > 30 %}
+            <h4>You have been banned from adding content to the database.</h4>
+        {% elif user_comment %}
+            <h3>Your Comment</h3>
+            {{comment(user_comment.id, user, user_comment.subject, user_comment.text, user_comment.tags, movie, user)}}
+        {% else %}
+            <a href="/m/{{movie.id}}/add" class="btn btn-primary btn-block btn-lg">Add A Comment</a>
+        {% endif %}
+    </div>
+    <hr/>
+    <div class="movie-comments movie-page-section">
+        <h3>User Comments</h3>
+        {% if comments|length == 0 %}
+        <div class="movie-comment">
+            <h5 class="text-center m-0">No comments yet.</h5>
+        </div>
+        {% else %}
+        {% for c in comments %}
+            {% if c.user.role.value < 30 %}
+                {{comment(c.id, c.user, c.subject, c.text, c.tags, movie, user)}}
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+<div class="movie-card">
+    <div class="movie-card-img">
+        <a href="/m/{{movie.id}}"><img class="rounded" src="{{movie.poster_path}}"/></a>
+    </div>
+    <div class="movie-card-text">
+        <div class="movie-card-title">
+            <a href="/m/{{movie.id}}">
+                <h4 class="hide-link">{{movie.title}}</h4>
+                <p class="hide-link">{{movie.release_date_str}}</p>
+            </a>
+        </div>
+        <div class="movie-card-overview">
+            <p>{{movie.overview}}</p>
+        </div>
+        <div class="movie-card-tmdb">
+            <h6><a href="https://www.themoviedb.org/movie/{{movie.id}}">TMDb Page</a></h6>
+        </div>
+    </div>
+</div>

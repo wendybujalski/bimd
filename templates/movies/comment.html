@@ -1,0 +1,27 @@
+{% macro comment(id, comment_user, subject, text, tags, movie, user, display_movie_title=false) -%}
+<div class="movie-comment text-start">
+    <h4><a href="/m/{{movie.id}}/c/{{id}}">{% if subject|length > 0 %}{{subject}}{% else %}<i>Untitled</i>{% endif %}</a></h4>
+    {% if display_movie_title %}
+    <p><strong>Movie: </strong><a href="/m/{{movie.id}}">{{movie.title}}</a></p>
+    {% else %}
+    <p><strong>By:</strong> <a href="/u/{{comment_user.username}}">{{comment_user.username}}</a></p>
+    {% endif %}
+
+    {% if tags|length > 0 %}
+    <p><strong>Tags: </strong>
+    {% for tag in tags %}
+        {% if tag.tag.active %}{{tag.tag.name}}{% if not loop.last %}, {% endif %}{% endif %}    
+    {% endfor %}
+    </p>
+    {% endif %}
+    <p>{% if text|length > 0 %}{{text}}{% else %}<i>No comment text.</i>{% endif %}</p>
+    {% if user and (user == comment_user or (user.role.value < 11 and comment_user.role.value > 1)) %}
+    <div class="text-center submit-cancel">
+        {% if user == comment_user or user.role.value == 0 %}<a href="/m/{{movie.id}}/c/{{id}}/edit" class="btn btn-primary btn-block">Edit</a>{% endif %}
+        <form method="POST" action="/m/{{movie.id}}/c/{{id}}/delete" class="form-inline form-one-button">
+            <button class="btn btn-danger btn-block">Delete</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{%- endmacro %}

@@ -1,24 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Search Results For "{{query}}"</h1>
+    <h1>Search Results For "{{query}}"{% if page > 1%} <i>(Page {{page}})</i>{% endif %}</h1>
 
     <div class="search-results">
     {% for movie in results %}
-        <div class="movie-card">
-            <div class="movie-card-img">
-                <a href="/m/{{movie.id}}"><img class="rounded" src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{movie.poster_path}}"/></a>
-            </div>
-            <div class="movie-card-text">
-                <div class="movie-card-title">
-                    <a href="/m/{{movie.id}}">
-                        <h4>{{movie.title}}</h4>
-                        <p>{{movie.release_date}}</p>
-                    </a>
-                </div>
-                <div class="movie-card-overview">{{movie.overview}}</div>
-            </div>
-        </div>
+        {% include "movies/card.html" %}
     {% endfor %}
+    </div>
+    <div class="text-content text-center" id="search-pages">
+        {% if page == 1 and page == total_pages %}
+            <h4>No more results to show.</h4>
+        {% else %}
+            <ul class="search-list">
+                {% if total_pages > 9 %}
+                    {% set page_start = page - 4 %}
+                    {% if page_start < 1 %} {% set page_start = 1 %}{% endif %}
+                    {% set page_end = page_start + 8 %}
+                    {% if page_end > total_pages %}
+                        {% set page_end = total_pages %}
+                        {% set page_start = page_end - 8 %}
+                    {% endif %}
+                {% else %}
+                    {% set page_start = 1 %}
+                    {% set page_end = total_pages %}
+                {% endif %}
+
+                {% for n in range(page_start, page_end+1) %}
+                    {% if n == page %}
+                    <li>{{n}}</li>
+                    {% else %}
+                    <li><a href="/search?q={{query}}&page={{n}}">{{n}}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <ul class="search-list">
+                {% if page > 1 %}
+                <li><a href="/search?q={{query}}" class="btn btn-primary">First</a></li>
+                <li><a href="/search?q={{query}}&page={{page-1}}" class="btn btn-primary">Back</a></li>
+                {% endif %}
+                {% if page < total_pages %}
+                <li><a href="/search?q={{query}}&page={{page+1}}" class="btn btn-primary">Next</a></li>
+                <li><a href="/search?q={{query}}&page={{total_pages}}" class="btn btn-primary">Last</a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}

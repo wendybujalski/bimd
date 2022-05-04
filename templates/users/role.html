@@ -2,13 +2,13 @@
 
 {% block content %}
 <div class="row justify-content-md-center">
-      <h2 class="text-center">Edit Your Account</h2>
+      <h2 class="text-center">Select Role For {{user.username}}</h2>
       <div class="col-10 col-md-8 text-content mx-auto">
         <form method="POST" id="user_form">
           {% include "formbaselabel.html" %}
           <div class="text-center submit-cancel">
-            <button class="btn btn-primary btn-block">Submit</button>
-            <a href="/u/{{g.user.username}}" class="btn btn-danger btn-block">Cancel</a>
+            <button class="btn btn-primary btn-block">Change</button>
+            <a href="/u/{{user.username}}" class="btn btn-danger btn-block">Cancel</a>
           </div>
         </form>
       </div>

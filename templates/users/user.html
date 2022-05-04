@@ -1,3 +1,5 @@
+{% from "movies/comment.html" import comment %}
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -16,8 +18,19 @@
         <p>Last Login: {{user.last_login.strftime('%B %d, %Y')}}</p>
         <p>Role: {{user.role_string}}</p>
         {% if user == g.user %}
-        <a href="/u/{{g.user.username}}/edit" class="btn btn-primary btn-block btn-lg">Edit Account Information</a>
+            <div class="mb-2"><a href="/u/{{g.user.username}}/edit" class="btn btn-primary btn-block btn-lg">Edit Account Information</a></div>
+        {% endif %}
+        {% if g.user.role.value == 0 %}
+            <div class="mb-2"><a href="/u/{{user.username}}/role" class="btn btn-warning btn-block btn-lg">Change User Role</a></div>
         {% endif %}
     </div>
+    {% if comments|length > 0 and user.role.value < 31 %}
+    <div class="user-profile-comments">
+        <h3>{{user.username}}'s Comments</h3>
+        {% for c in comments %}
+            {{comment(c.id, c.user, c.subject, c.text, c.tags, c.movie, user, true)}}
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

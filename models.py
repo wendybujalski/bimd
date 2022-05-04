@@ -34,9 +34,22 @@ class Movie(db.Model):
 
     id = db.Column( db.Integer, primary_key=True)
     title = db.Column(db.String(1000), nullable=False)
-    poster = db.Column(db.Text)
+    poster_path = db.Column(db.Text)
     release_date = db.Column(db.DateTime)
     overview = db.Column(db.Text)
+
+    @property
+    def release_date_str(self):
+        """Returns a pretty string representation of the movie's release date."""
+        return self.release_date.strftime("%B %d, %Y")
+
+    @classmethod
+    def convert_release_date_to_datetime(cls, m):
+        """Takes movie json from TMDb and returns the release date converted to a datetime object."""
+        relDateObj = None
+        if "release_date" in m and m["release_date"]:
+            relDateObj = datetime.strptime(m["release_date"], "%Y-%m-%d")
+        return relDateObj
 
 
 class User(db.Model):
@@ -93,11 +106,12 @@ class Tag(db.Model):
     __tablename__ = "tag"
 
     id = db.Column( db.Integer, primary_key=True, autoincrement=True)
-    created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    created_by_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.Text())
+    active = db.Column(db.Boolean(), nullable=False, default=True)
 
-    user = db.relationship("User")
+    created_by = db.relationship("User")
 
 class MovieComment(db.Model):
     """Model for the MovieComment table"""
@@ -108,6 +122,9 @@ class MovieComment(db.Model):
     id = db.Column( db.Integer, primary_key=True, autoincrement=True)
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id', ondelete='CASCADE'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    tags = db.relationship('MovieCommentTag', backref='movie_comment', passive_deletes=True)
+    user = db.relationship('User')
+    movie = db.relationship('Movie')
     subject = db.Column(db.String(100))
     text = db.Column(db.Text())
     rating = db.Column(db.Integer) # may or may not implement
@@ -120,4 +137,6 @@ class MovieCommentTag(db.Model):
 
     id = db.Column( db.Integer, primary_key=True, autoincrement=True)
     movie_comment_id = db.Column(db.Integer, db.ForeignKey('movie_comment.id', ondelete='CASCADE'), nullable=False)
+    comment = db.relationship('MovieComment')
     tag_id = db.Column(db.Integer, db.ForeignKey('tag.id', ondelete='CASCADE'), nullable=False)
+    tag = db.relationship('Tag')
