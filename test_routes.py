@@ -2,6 +2,7 @@ import os
 from unittest import TestCase
 from app import app, DATABASE_NAME
 from models import db, User, Movie, Tag, MovieComment, MovieCommentTag
+from forms import UserSignUpForm
 
 os.environ['DATABASE_URL'] = f'postgresql:///{DATABASE_NAME}_test'
 app.config['WTF_CSRF_ENABLED'] = False
@@ -39,7 +40,7 @@ class FlaskRouteTests(TestCase):
         test_comment.id = test_comment_id
         db.session.commit()
         
-        
+
     
     def test_page_index(self):
         """Test to confirm that the index displays properly."""
@@ -83,8 +84,21 @@ class FlaskRouteTests(TestCase):
 
     def test_signup(self):
         """Test signing a user up for an account."""
-        pass
-        # TODO
+        
+        form = UserSignUpForm()
+        form.username.data = "test_signup"
+        form.email.data = 'test_signup@gmail.com'
+        form.password.data = 'test_password'
+        form.password_confirm.data = 'test_password'
+
+        with self.client as c:
+            with c.session_transaction() as session:
+                res = c.post("/signup", data=form, follow_redirects=True)
+
+                self.assertEqual(res.status_code, 200) # make sure it responds with an ok status code
+
+
+
     
     def test_login(self):
         """Test logging a user into their account."""
