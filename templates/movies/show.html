@@ -10,11 +10,12 @@
     <div class="movie-page-section">
         <h3>Tag Statistics</h3>
         <div class="movie-stats">
-            <!-- TODO Add a graph of the stats here! Also make this look nicer. -->
+            <h4>Tag Stats:</h4>
+            <canvas id="tagStats"></canvas>
             <h4>Tag Totals:</h4>
             <ul>
             {% for v, k in stats %}
-                <li><strong>{{k}}:</strong> {{v}}</li>
+                <li><strong><a href="/tags/{{tag_ids[k]}}">{{k}}</a>:</strong> {{v}}</li>
             {% endfor %}
             </ul>
         </div>
@@ -49,4 +50,48 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    const stats = {{ stats | tojson | safe }};
+    const totals = stats.map(tag => tag[0]);
+    const labels = stats.map(tag => tag[1]);
+    const canvas = document.getElementById("tagStats");
+    const length = labels.length
+    canvas.height = length * 20;
+
+    const chart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Number of Tags",
+                data: totals,
+                borderColor: Array.from({length}).map( (e, i) => i % 2 ? "red" : "blue"),
+                backgroundColor: Array.from({length}).map( (e, i) => i % 2 ? "rgba(255, 0, 0, 0.5)" : "rgba(0, 0, 255, 0.5)")
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                display: false
+                }
+            },
+            elements: {
+                bar: {
+                    borderWidth: 2,
+                }
+            },
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

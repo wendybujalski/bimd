@@ -20,7 +20,7 @@
         {% if user == g.user %}
             <div class="mb-2"><a href="/u/{{g.user.username}}/edit" class="btn btn-primary btn-block btn-lg">Edit Account Information</a></div>
         {% endif %}
-        {% if g.user.role.value == 0 %}
+        {% if g.user and g.user.role.value == 0 %}
             <div class="mb-2"><a href="/u/{{user.username}}/role" class="btn btn-warning btn-block btn-lg">Change User Role</a></div>
         {% endif %}
     </div>

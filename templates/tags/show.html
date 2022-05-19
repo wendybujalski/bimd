@@ -1,0 +1,11 @@
+{% from "tags/tag.html" import tag_div %}
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-8 col-lg-6" id="tags">
+        {{tag_div(tag.name, tag.id, tag.created_by, tag.description, tag.active, user)}}
+    </div>
+</div>
+{% endblock %}

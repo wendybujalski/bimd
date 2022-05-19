@@ -20,6 +20,10 @@ a:hover {
     display: inline;
 }
 
+.tag h4 a {
+    color: black
+}
+
 .inactive-tag {
     border-radius: 1rem;
     padding: 0.5rem;
@@ -50,6 +54,17 @@ a:hover {
 
 .navbar-toggler {
     color: white;
+}
+
+.navbar-collapse ul {
+    background-color: black;
+}
+
+@media (max-width: 768px) {
+    .navbar-collapse ul {
+        width: fit-content;
+        padding: 1rem;
+    }
 }
 
 .text-content {

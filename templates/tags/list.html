@@ -1,27 +1,4 @@
-{% macro tag_div(name, id, created_by, description, active) -%}
-<div class="tag {% if active %}text-content{% else %}inactive-tag{% endif %}">
-    <h4>Tag: {{name}}{% if not active %} <i>(hidden)</i>{% endif %}</h4>
-    <p><strong>Added By:</strong> {{created_by.username}}</p>
-    <p><strong>Description:</strong> {{description}}</p>
-    {% if created_by == user or user.role.value == 0 %}
-    <div class="text-center tag-buttons">
-        <a href="/tags/{{id}}/edit" class="btn btn-primary btn-block">Edit Tag</a>
-        {% if active %}
-        <form method="POST" action="/tags/{{id}}/hide" class="form-inline form-one-button">
-            <button class="btn btn-warning btn-block">Hide Tag</button>
-        </form>
-        {% else %}
-        <form method="POST" action="/tags/{{id}}/show" class="form-inline form-one-button">
-            <button class="btn btn-warning btn-block">Show Tag</button>
-        </form>
-        {% endif %}
-        <form method="POST" action="/tags/{{id}}/delete" class="form-inline form-one-button">
-            <button class="btn btn-danger btn-block">Delete Tag</button>
-        </form>
-    </div>
-    {% endif %}
-</div>
-{%- endmacro %}
+{% from "tags/tag.html" import tag_div %}
 
 {% extends 'base.html' %}
 
@@ -33,10 +10,10 @@
     </div>
     <div class="col-md-8 col-lg-6" id="tags">
         {% for tag in tags %}
-            {{tag_div(tag.name, tag.id, tag.created_by, tag.description, tag.active)}}
+            {{tag_div(tag.name, tag.id, tag.created_by, tag.description, tag.active, user)}}
         {% endfor %}
         {% for tag in hidden %}
-            {{tag_div(tag.name, tag.id, tag.created_by, tag.description, tag.active)}}
+            {{tag_div(tag.name, tag.id, tag.created_by, tag.description, tag.active, user)}}
         {% endfor %}
     </div>
 </div>

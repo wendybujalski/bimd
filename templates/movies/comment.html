@@ -10,7 +10,7 @@
     {% if tags|length > 0 %}
     <p><strong>Tags: </strong>
     {% for tag in tags %}
-        {% if tag.tag.active %}{{tag.tag.name}}{% if not loop.last %}, {% endif %}{% endif %}    
+        {% if tag.tag.active %}<a href="/tags/{{tag.tag.id}}">{{tag.tag.name}}</a>{% if not loop.last %}, {% endif %}{% endif %}    
     {% endfor %}
     </p>
     {% endif %}

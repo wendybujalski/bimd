@@ -1,4 +1,4 @@
-import requests
+import requests, os
 from flask import Flask, render_template, redirect, session, g, flash, request, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
@@ -12,9 +12,11 @@ NO_POSTER_PATH = "./static/no-poster.png"
 CURR_USER_KEY = "curr_user"
 DATABASE_NAME = "bimd"
 
+database_uri = os.environ.get("DATABASE_URL", f'postgresql:///{DATABASE_NAME}')
+
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql:///{DATABASE_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -198,6 +200,10 @@ def search():
     query = request.args.get("q")
     page = int(request.args.get("page") or 1)
 
+    if(not query):
+        flash("You must enter a search query to view the search page.", "danger")
+        return redirect("/")
+
     # Get the current page of search results.
     res = requests.get(
         f"{API_BASE_URL}search/movie",
@@ -363,14 +369,16 @@ def show_movie(id):
 
     # Calculate tag stats for the page
     stats = {}
+    tag_ids = {}
     for comment in comments:
         if comment.user.role.value < 30: # remove shadow banned and banned user comments from the stats
             for tag in comment.tags:
                 if(tag.tag.active):
                     stats[tag.tag.name] = stats.get(tag.tag.name, 0) + 1 
+                    tag_ids[tag.tag.name] = tag.tag.id
     stats = sorted(((v, k) for k, v in stats.items()), reverse=True)
 
-    return render_template("movies/show.html", movie=movie, comments=comments, user_comment=user_comment, user=user, stats=stats)
+    return render_template("movies/show.html", movie=movie, comments=comments, user_comment=user_comment, user=user, stats=stats, tag_ids=tag_ids)
 
 @app.route("/m/<int:id>/add", methods=["GET", "POST"])
 def add_comment(id):
@@ -572,6 +580,14 @@ def new_tag():
         return redirect("/tags")
     else:
         return render_template("tags/new.html", form=form)
+
+@app.route("/tags/<int:id>")
+def see_tag(id):
+    """Route to see a single tag's page."""
+
+    tag = Tag.query.get(id)
+
+    return render_template("tags/show.html", tag=tag, user=g.user)
 
 @app.route("/tags/<int:id>/edit", methods=["GET", "POST"])
 def edit_tag(id):
