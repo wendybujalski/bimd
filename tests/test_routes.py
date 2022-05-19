@@ -39,7 +39,7 @@ class FlaskRouteTests(TestCase):
         test_comment.id = test_comment_id
         db.session.commit()
         
-
+        
     
     def test_page_index(self):
         """Test to confirm that the index displays properly."""
