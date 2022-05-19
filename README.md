@@ -4,9 +4,9 @@
 
 My first full-stack capstone project for the Springboard Software Engineering Career Track.
 
-This app is now [deployed here!](LINK).
+This app is now [deployed here!](https://bimd.herokuapp.com/).
 
-Live Link: LINK
+Live Link: [https://bimd.herokuapp.com/](https://bimd.herokuapp.com/)
 
 ---
 
@@ -30,7 +30,15 @@ Other Tools Used -
 
 ### **User Flow**
 
+Without registering an account, users can search the database of movies and see the comments/tags left by other users.
 
+To add content to the database, a user must register an account. New user accounts are given the role of user.
+
+Once registered, a user can leave one comment per movie. The comment consists of a description of the content of the movie which the user considers bigoted as well as any number of tags.
+
+All of the tags left on a movie by users are compiled into a graph on the movie's page.
+
+Tags can be added, edited, and removed only by users with the role of admin or moderator. Roles can only be changed by admin users.
 
 ---
 

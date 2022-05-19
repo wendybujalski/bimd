@@ -6,7 +6,7 @@ from models import connect_db, db, bcrypt, Role, User, Tag, Movie, MovieComment,
 from forms import SearchForm, UserEditForm, UserLoginForm, UserSignUpForm, MovieCommentForm, TagForm, UserRoleForm
 try:
     from secrets import SECRET_KEY, TMDB_API_KEY
-except:
+except: 
     SECRET_KEY = "no secrets file"
     TMDB_API_KEY = "api key not properly set"
 
