@@ -4,7 +4,11 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from models import connect_db, db, bcrypt, Role, User, Tag, Movie, MovieComment, MovieCommentTag
 from forms import SearchForm, UserEditForm, UserLoginForm, UserSignUpForm, MovieCommentForm, TagForm, UserRoleForm
-from secrets import SECRET_KEY, TMDB_API_KEY
+try:
+    from secrets import SECRET_KEY, TMDB_API_KEY
+except:
+    SECRET_KEY = "no secrets file"
+    TMDB_API_KEY = "api key not properly set"
 
 API_BASE_URL = "https://api.themoviedb.org/3/"
 API_POSTER_PATH = "https://image.tmdb.org/t/p/w600_and_h900_bestv2"
@@ -12,6 +16,7 @@ NO_POSTER_PATH = "./static/no-poster.png"
 CURR_USER_KEY = "curr_user"
 DATABASE_NAME = "bimd"
 
+tmdb_api_key = os.environ.get("TMDB_API_KEY", TMDB_API_KEY)
 database_uri = os.environ.get("DATABASE_URL", f'postgresql:///{DATABASE_NAME}')
 
 app = Flask(__name__)
@@ -207,7 +212,7 @@ def search():
     # Get the current page of search results.
     res = requests.get(
         f"{API_BASE_URL}search/movie",
-        params={"api_key": TMDB_API_KEY, "query": query, "page": page}
+        params={"api_key": tmdb_api_key, "query": query, "page": page}
     )
     data = res.json()
     results = data["results"]
@@ -340,7 +345,7 @@ def show_movie(id):
 
     # If it is not in our database, send a request to TMDb to get the info and put it in our database.
     if movie == None:
-        res = requests.get(f"{API_BASE_URL}movie/{id}", params={"api_key": TMDB_API_KEY})
+        res = requests.get(f"{API_BASE_URL}movie/{id}", params={"api_key": tmdb_api_key})
         m = res.json()
         relDateObj = Movie.convert_release_date_to_datetime(m)
 
