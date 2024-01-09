@@ -4,10 +4,6 @@
 
 My first full-stack capstone project for the Springboard Software Engineering Career Track.
 
-This app is now [deployed here!](https://bimd.herokuapp.com/).
-
-Live Link: [https://bimd.herokuapp.com/](https://bimd.herokuapp.com/)
-
 ---
 
 ### **Tools Used**
